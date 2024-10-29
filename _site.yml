@@ -5,8 +5,6 @@ navbar:
   right:
     - text: "Academic"
       href: academic.html
-    - test: "Dashboard"
-      href: dashboard.html
     - icon: fa-envelope fa-lg
       href: mailto:<huizhong22x@gmail.com>
     - icon: fa-github fa-lg
