@@ -1,0 +1,41 @@
+---
+title: "My Personal Website"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+---
+
+### About me
+
+I'm currently a 2nd-year master's student in Biostatistics at Columbia University. 
+
+<img src="images/photo_me.jpg" style="width:30%">
+
+Throughout my academic learning, I have developed a strong foundation in SAS, R, Python programming and statistical methods.
+
+### Experience
+
+* [Academic](academic.html)
+
+### Homework #4
+
+* [Dashboard](dashboard.html)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

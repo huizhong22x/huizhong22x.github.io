@@ -1,0 +1,76 @@
+---
+title: "Dashboard"
+output: 
+  
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+
+library(tidyverse)
+library(p8105.datasets)
+library(plotly)
+```
+
+
+```{r message=FALSE}
+df =  
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USW00022534", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2023-01-01",
+    date_max = "2023-12-31") |> 
+  mutate(
+    name = case_match(
+      id, 
+      "USW00094728" ~ "CentralPark_NY", 
+      "USW00022534" ~ "Molokai_HI",
+      "USS0023B17S" ~ "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10,
+    month = floor_date(date, unit = "month")) |> 
+  drop_na() |> 
+  select(id, name, everything())
+```
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Scatter for maximum and minimum temperature
+
+```{r}
+df |> 
+  mutate(
+    text_label = str_c("tmin: ", tmin, "\ntmax: ", tmax, "\nName: ", name)
+  ) |> 
+  plot_ly(
+    x = ~tmin, y = ~tmax, color = ~name, text = ~text_label,
+    type = "scatter", mode = "markers", alpha = 0.9
+  )
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Maximum temperature for selected weather stations
+
+```{r}
+df |> 
+  mutate(name = fct_reorder(name, prcp)) |> 
+  plot_ly(
+    x = ~name, y = ~tmax, color = ~name,
+    type = "box", colors = "viridis")
+```
+
+### Distribution of precipitation for selected weather stations
+
+```{r}
+df |> 
+  plot_ly(
+    x = ~prcp, type = "histogram", color = ~name,  colors = "viridis"
+  )
+```
+
