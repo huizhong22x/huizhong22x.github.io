@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Iteration</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="academic.html">Academic</a>
+</li>
+<li>
+  <a href="intern.html">Internship</a>
+</li>
+<li>
+  <a href="mailto:&lt;huizhong22x@gmail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/huizhong22x/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Iteration</h1>
+
+</div>
+
+
+<div id="problem-1" class="section level3">
+<h3>Problem 1</h3>
+<pre class="r"><code>set.seed(123)
+
+# function
+sim_birthday = function(n){
+  birthdays = sample(1:365, n, replace = TRUE)
+  
+  return(length(unique(birthdays)) &lt; n)
+}
+
+# 10000 times
+sim_birthday_df = 
+  expand.grid(
+    sample_size = 2:50,
+    iter = 1:10000
+  ) |&gt; 
+  mutate(
+    estimate_df = map(sample_size, sim_birthday)
+  ) |&gt; 
+  unnest(estimate_df)
+
+prob_df = 
+  sim_birthday_df |&gt; 
+  group_by(sample_size) |&gt; 
+  summarize(
+    prob = mean(estimate_df)
+  )
+
+# plot
+ggplot(prob_df, aes(x = sample_size, y = prob)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = &quot;Probabilty of sharing a Birthday and Group Size&quot;,
+    x = &quot;Group size&quot;,
+    y = &quot;Probability&quot;
+  )</code></pre>
+<p><img src="Iteration_files/figure-html/unnamed-chunk-1-1.png" width="90%" /></p>
+<p>There is a positive association between the probability that at least
+two people in the group will share a birthday and the group size.</p>
+</div>
+<div id="problem-2" class="section level3">
+<h3>Problem 2</h3>
+<pre class="r"><code>set.seed(123)
+
+# calculate power
+my_power = function(mu_0, n = 30, sigma = 5) {
+  x = rnorm(n, mean = mu_0, sd = sigma)
+
+  t_result = t.test(x, mu = 0) |&gt; broom::tidy()
+  
+  tibble(
+    estimate = t_result$estimate,
+    p_value = t_result$p.value
+  )
+}
+
+# for mu list
+sim_powers_df = function(mu_list, iteration = 5000){
+  expand_grid(
+    mu = mu_list,
+    iter = 1:iteration
+  ) |&gt; 
+  mutate(
+    estimate_df = map(mu, my_power)
+  ) |&gt; 
+  unnest(estimate_df)
+}
+
+# result
+mu_list = 0:6
+sim_results_df = sim_powers_df(mu_list)
+
+sim_results_plot = sim_results_df |&gt; 
+  mutate(
+    rej = ifelse(p_value &lt; .05, 1, 0)
+  )</code></pre>
+<pre class="r"><code>sim_results_plot1 = sim_results_plot |&gt; 
+  group_by(mu) |&gt; 
+  summarize(
+    rej_rate = mean(rej),
+    avg_estimate = mean(estimate),
+    avg_estimate_rej = mean(estimate[rej == 1])
+  ) |&gt; 
+  filter(mu != 0)
+
+# plot 1
+plot1 = 
+  ggplot(sim_results_plot1, aes(x = mu, y = rej_rate)) +
+  geom_line(size = 1) +
+  geom_point() +
+  labs(
+    title = &quot;Association Between Power of the T-Test And Effect Size&quot;,
+    x = &quot;True value of μ&quot;,
+    y = &quot;Proportion of rejections (Power)&quot;
+  )
+
+plot1</code></pre>
+<p><img src="Iteration_files/figure-html/unnamed-chunk-3-1.png" width="90%" /></p>
+<p>Plot 1 suggests that the proportion of times the null was rejected
+increases with increasing effect size. They are positive associated and
+the power is equal to 1 after $ = 5$.</p>
+<pre class="r"><code># plot 2
+plot2 = 
+  ggplot(sim_results_plot1, aes(x = mu)) +
+  geom_line(aes(y = avg_estimate, color = &quot;Estimate Overall&quot;), size = 1) +
+  geom_point(aes(y = avg_estimate, color = &quot;Estimate Overall&quot;)) +
+  geom_line(aes(y = avg_estimate_rej, color = &quot;Estimate for Rejected Tests&quot;), size = 1) +
+  geom_point(aes(y = avg_estimate_rej, color = &quot;Estimate for Rejected Tests&quot;)) +
+  scale_color_manual(
+    values = c(&quot;Estimate Overall&quot; = &quot;blue&quot;, &quot;Estimate for Rejected Tests&quot; = &quot;red&quot;)
+  ) +
+  labs(
+    title = &quot;Average Estimate of μ overall and for Tests with Rejection Only&quot;,
+    x = &quot;True value of μ&quot;,
+    y = &quot;Average Estimate of μ&quot;
+  ) +
+  theme(legend.title = element_blank())
+
+plot2</code></pre>
+<p><img src="Iteration_files/figure-html/unnamed-chunk-4-1.png" width="90%" /></p>
+<p>Plot 2 suggests that the sample average of $ $ across tests with
+rejection and the true value of $ $ are not equal, because the sample
+mean is significantly different from 0 in the null hypothesis, and then
+the p-value &lt; .05.</p>
+</div>
+<div id="problem-3" class="section level3">
+<h3>Problem 3</h3>
+<pre class="r"><code>url = &quot;https://raw.githubusercontent.com/washingtonpost/data-homicides/refs/heads/master/homicide-data.csv&quot;
+raw_dat = read_csv(url, na = c(&quot;Unknown&quot;, &quot;&quot;))
+
+skimr::skim(raw_dat)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">raw_dat</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">52179</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">12</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">8</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="13%" />
+<col width="19%" />
+<col width="5%" />
+<col width="5%" />
+<col width="8%" />
+<col width="12%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">uid</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">9</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">52179</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">victim_last</td>
+<td align="right">5764</td>
+<td align="right">0.89</td>
+<td align="right">1</td>
+<td align="right">20</td>
+<td align="right">0</td>
+<td align="right">12686</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">victim_first</td>
+<td align="right">5762</td>
+<td align="right">0.89</td>
+<td align="right">1</td>
+<td align="right">28</td>
+<td align="right">0</td>
+<td align="right">16639</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">victim_race</td>
+<td align="right">4199</td>
+<td align="right">0.92</td>
+<td align="right">5</td>
+<td align="right">8</td>
+<td align="right">0</td>
+<td align="right">5</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">victim_sex</td>
+<td align="right">4231</td>
+<td align="right">0.92</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">city</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">5</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">50</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">state</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">28</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">disposition</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">14</td>
+<td align="right">21</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="9%" />
+<col width="8%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="9%" />
+<col width="10%" />
+<col width="4%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">reported_date</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">20130899.16</td>
+<td align="right">1123419.63</td>
+<td align="right">20070101.00</td>
+<td align="right">20100318.00</td>
+<td align="right">20121216.00</td>
+<td align="right">20150911.00</td>
+<td align="right">201511105.00</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">victim_age</td>
+<td align="right">2999</td>
+<td align="right">0.94</td>
+<td align="right">31.80</td>
+<td align="right">14.42</td>
+<td align="right">0.00</td>
+<td align="right">22.00</td>
+<td align="right">28.00</td>
+<td align="right">40.00</td>
+<td align="right">102.00</td>
+<td align="left">▃▇▃▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">lat</td>
+<td align="right">60</td>
+<td align="right">1.00</td>
+<td align="right">37.03</td>
+<td align="right">4.35</td>
+<td align="right">25.73</td>
+<td align="right">33.77</td>
+<td align="right">38.52</td>
+<td align="right">40.03</td>
+<td align="right">45.05</td>
+<td align="left">▁▅▅▇▅</td>
+</tr>
+<tr class="even">
+<td align="left">lon</td>
+<td align="right">60</td>
+<td align="right">1.00</td>
+<td align="right">-91.47</td>
+<td align="right">13.75</td>
+<td align="right">-122.51</td>
+<td align="right">-96.00</td>
+<td align="right">-87.71</td>
+<td align="right">-81.76</td>
+<td align="right">-71.01</td>
+<td align="left">▃▁▃▇▅</td>
+</tr>
+</tbody>
+</table>
+<p>There are 52179 observations and 12 variables in the dataset,
+including 8 character variables (e.g., city, state, disposition) and 4
+numeric variables (e.g., victim_age, lat).</p>
+<pre class="r"><code>dat = raw_dat |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    city_state = paste(city, state, sep = &quot;, &quot;)
+  )
+
+summary = dat |&gt; 
+  group_by(city_state) |&gt; 
+  summarize(
+    homicides = n(),
+    homicides_unsolved = sum(disposition %in% c(&quot;Closed without arrest&quot;, &quot;Open/No arrest&quot;), na.rm = TRUE)
+  )
+
+summary
+## # A tibble: 51 × 3
+##    city_state      homicides homicides_unsolved
+##    &lt;chr&gt;               &lt;int&gt;              &lt;int&gt;
+##  1 Albuquerque, NM       378                146
+##  2 Atlanta, GA           973                373
+##  3 Baltimore, MD        2827               1825
+##  4 Baton Rouge, LA       424                196
+##  5 Birmingham, AL        800                347
+##  6 Boston, MA            614                310
+##  7 Buffalo, NY           521                319
+##  8 Charlotte, NC         687                206
+##  9 Chicago, IL          5535               4073
+## 10 Cincinnati, OH        694                309
+## # ℹ 41 more rows</code></pre>
+<pre class="r"><code># Baltimore, MD
+baltimore_summary = summary |&gt; 
+  filter(city_state == &quot;Baltimore, MD&quot;)
+
+baltimore_test =
+  prop.test(
+  x = baltimore_summary |&gt; pull(homicides_unsolved),
+  n = baltimore_summary |&gt; pull(homicides)
+)
+
+baltimore_results = broom::tidy(baltimore_test)
+baltimore_estimates = baltimore_results |&gt; 
+  select(estimate, conf.low, conf.high)
+
+baltimore_estimates
+## # A tibble: 1 × 3
+##   estimate conf.low conf.high
+##      &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+## 1    0.646    0.628     0.663</code></pre>
+<pre class="r"><code># Each city
+summary_nest = nest(summary, data = homicides:homicides_unsolved)
+
+my_prop_test = function(df) {
+  test_result = prop.test(x = df$homicides_unsolved, n = df$homicides)
+  test_result = test_result |&gt; 
+    broom::tidy() |&gt; 
+    select(estimate, conf.low, conf.high)
+} 
+
+city_summary = summary_nest |&gt; 
+  mutate(
+    results = map(data, my_prop_test)
+  ) |&gt; 
+  unnest()
+
+city_summary
+## # A tibble: 51 × 6
+##    city_state      homicides homicides_unsolved estimate conf.low conf.high
+##    &lt;chr&gt;               &lt;int&gt;              &lt;int&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+##  1 Albuquerque, NM       378                146    0.386    0.337     0.438
+##  2 Atlanta, GA           973                373    0.383    0.353     0.415
+##  3 Baltimore, MD        2827               1825    0.646    0.628     0.663
+##  4 Baton Rouge, LA       424                196    0.462    0.414     0.511
+##  5 Birmingham, AL        800                347    0.434    0.399     0.469
+##  6 Boston, MA            614                310    0.505    0.465     0.545
+##  7 Buffalo, NY           521                319    0.612    0.569     0.654
+##  8 Charlotte, NC         687                206    0.300    0.266     0.336
+##  9 Chicago, IL          5535               4073    0.736    0.724     0.747
+## 10 Cincinnati, OH        694                309    0.445    0.408     0.483
+## # ℹ 41 more rows</code></pre>
+<pre class="r"><code>plot3 = 
+  ggplot(city_summary, aes(x = fct_reorder(city_state, estimate), y = estimate)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = conf.low, ymax = conf.high)) +
+  labs(
+    title = &quot;Proportion of Unsolved Homicides by City&quot;,
+    x = &quot;City&quot;,
+    y = &quot;Proportion&quot;
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+plot3</code></pre>
+<p><img src="Iteration_files/figure-html/unnamed-chunk-9-1.png" width="90%" /></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

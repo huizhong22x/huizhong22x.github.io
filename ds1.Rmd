@@ -1,0 +1,53 @@
+---
+title: "Data Science"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+---
+
+---
+
+### Website
+
+- [P8105](https://p8105.com/index.html)
+
+---
+
+### Topics
+
+- What is Data Science?
+- Building Blocks
+- Data Wrangling I
+- Visualization and EDA
+- Data Wrangling II
+- Interactivity
+- Iteration
+- Linear Models
+- R shiny
+
+---
+
+### Projects
+
+- [Project 1](git.html)
+- [Project 2](Tidy-Data.html)
+- [Project 3](Viz+EDA.html)
+- [Project 4](Iteration.html)
+- Final Project: Gym-Goers Trend
+
+---
+
+### References
+
+- [R for Data Science](https://r4ds.hadley.nz/) by *G. Grolemund and H. Wickham*
+- [Exploratory Data Analysis with R](https://bookdown.org/rdpeng/exdata/) by *R Peng*
+- [R Programming for Data Science](https://bookdown.org/rdpeng/rprogdatascience/) by *R Peng*
+- [Advanced R](https://adv-r.hadley.nz/) by *H. Wickham*
+
+
+
+
+
+

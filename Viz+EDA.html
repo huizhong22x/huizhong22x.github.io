@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Viz+EDA</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="academic.html">Academic</a>
+</li>
+<li>
+  <a href="intern.html">Internship</a>
+</li>
+<li>
+  <a href="mailto:&lt;huizhong22x@gmail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/huizhong22x/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Viz+EDA</h1>
+
+</div>
+
+
+<pre class="r"><code>library(tidyverse)
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+library(knitr)</code></pre>
+<div id="problem-1" class="section level3">
+<h3>Problem 1</h3>
+<p>This problem uses the NY NOAA data.</p>
+<pre class="r"><code>library(p8105.datasets)
+data(&quot;ny_noaa&quot;)
+
+skimr::skim(ny_noaa)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">ny_noaa</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">2595176</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">7</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">Date</td>
+<td align="left">1</td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="13%" />
+<col width="19%" />
+<col width="5%" />
+<col width="5%" />
+<col width="8%" />
+<col width="12%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">id</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">11</td>
+<td align="right">11</td>
+<td align="right">0</td>
+<td align="right">747</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">tmax</td>
+<td align="right">1134358</td>
+<td align="right">0.56</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">532</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">tmin</td>
+<td align="right">1134420</td>
+<td align="right">0.56</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">0</td>
+<td align="right">548</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: Date</strong></p>
+<table>
+<colgroup>
+<col width="17%" />
+<col width="12%" />
+<col width="17%" />
+<col width="13%" />
+<col width="13%" />
+<col width="13%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">min</th>
+<th align="left">max</th>
+<th align="left">median</th>
+<th align="right">n_unique</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">date</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">1981-01-01</td>
+<td align="left">2010-12-31</td>
+<td align="left">1997-01-21</td>
+<td align="right">10957</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="17%" />
+<col width="12%" />
+<col width="17%" />
+<col width="7%" />
+<col width="8%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">prcp</td>
+<td align="right">145838</td>
+<td align="right">0.94</td>
+<td align="right">29.82</td>
+<td align="right">78.18</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">23</td>
+<td align="right">22860</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">snow</td>
+<td align="right">381221</td>
+<td align="right">0.85</td>
+<td align="right">4.99</td>
+<td align="right">27.22</td>
+<td align="right">-13</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">10160</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">snwd</td>
+<td align="right">591786</td>
+<td align="right">0.77</td>
+<td align="right">37.31</td>
+<td align="right">113.54</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">9195</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+<p>Description:</p>
+<p>This dataset has 2595176 rows and 7 columns, including 3 character
+variables (id, tmin, tmax), 3 numeric variables (prcp, snow, snwd) and 1
+date variable. The missing rates for variables “tmin” and “tmax” are
+very high, almost reaching half. And snowfall,snow depth and
+precipitation also have some missing values.</p>
+<pre class="r"><code># Create separate variables for year, month, and day
+# Convert temperature, precipitation, and snowfall to appropriate units
+
+noaa_df &lt;-  ny_noaa |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    year = lubridate::year(date), 
+    month = lubridate::month(date), 
+    day = lubridate::day(date), 
+    tmin = as.integer(tmin) / 10, 
+    tmax = as.integer(tmax) / 10,
+    prcp = prcp / 10
+  )
+
+# snowfall common value
+
+snow_common &lt;- noaa_df |&gt; 
+  filter(!is.na(snow)) |&gt; 
+  group_by(snow) |&gt; 
+  summarize(n_obs = n()) |&gt; 
+  arrange(desc(n_obs))
+
+head(snow_common, n = 3)
+## # A tibble: 3 × 2
+##    snow   n_obs
+##   &lt;int&gt;   &lt;int&gt;
+## 1     0 2008508
+## 2    25   31022
+## 3    13   23095</code></pre>
+<p>For snowfall, the most commonly observed value is 0.0 mm.</p>
+<pre class="r"><code>tmax_df = noaa_df |&gt; 
+  filter(month == 1 | month == 7) |&gt; 
+  filter(!is.na(tmax)) |&gt; 
+  group_by(id, year, month) |&gt; 
+  summarize(mean_tmax = mean(tmax))
+
+ggplot(tmax_df, aes(x = year, y = mean_tmax)) + 
+  geom_point(alpha = .5) + 
+  facet_grid(~month) + 
+  labs(title = &quot;Average Max Temperature in January and July Across Years&quot;,
+       x = &quot;Year&quot;, 
+       y = &quot;Average Max Temperature (°C)&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The average max temperature in July is higher than the average max
+temperature in January from 1981 to 2010. And there are many outliers
+such as the temperature which is below -10 °C in January, 1982.</p>
+<pre class="r"><code>p1 &lt;- noaa_df |&gt; 
+  filter(!is.na(tmin)) |&gt; 
+  filter(!is.na(tmax)) |&gt; 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_hex() + 
+  labs(title = &quot;Tmax vs Tmin&quot;, x = &quot;Tmin (°C)&quot;, y = &quot;Tmax (°C)&quot;)
+
+p2 &lt;- noaa_df |&gt; 
+  filter(snow &gt; 0 &amp; snow &lt; 100) |&gt; 
+  ggplot(aes(x = snow, fill = as.factor(year))) + 
+  geom_density(alpha = .1) + 
+  labs(title = &quot;Distribution of Snowfall Values (0 &lt; Snow &lt; 100 mm)&quot;, 
+       x = &quot;Snowfall (mm)&quot;,
+       y = &quot;Density&quot;) + 
+  viridis::scale_fill_viridis(discrete = TRUE)
+
+p1 + p2</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="problem-2" class="section level3">
+<h3>Problem 2</h3>
+<pre class="r"><code>accel_df = read_csv(&quot;./data/nhanes_accel.csv&quot;) |&gt; janitor::clean_names()
+covar_df = read_csv(&quot;./data/nhanes_covar.csv&quot;, skip = 4) |&gt; 
+  janitor::clean_names() |&gt; 
+  drop_na() |&gt; 
+  filter(age &gt;= 21)
+
+merged_nhanes = left_join(covar_df, accel_df, by = &quot;seqn&quot;) |&gt; 
+  mutate(
+    sex = case_match(sex, 1 ~ &quot;male&quot;, 2 ~ &quot;female&quot;), 
+    education = case_match(education, 1 ~ &quot;less_than_high_school&quot;,
+                           2 ~ &quot;high_school_equivalent&quot;,
+                           3 ~ &quot;more_than_high_school&quot;)
+  )
+
+sex_edu &lt;- merged_nhanes |&gt; 
+  group_by(education, sex) |&gt; 
+  summarize(n_obs = n())
+
+kable(sex_edu)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">education</th>
+<th align="left">sex</th>
+<th align="right">n_obs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">high_school_equivalent</td>
+<td align="left">female</td>
+<td align="right">23</td>
+</tr>
+<tr class="even">
+<td align="left">high_school_equivalent</td>
+<td align="left">male</td>
+<td align="right">35</td>
+</tr>
+<tr class="odd">
+<td align="left">less_than_high_school</td>
+<td align="left">female</td>
+<td align="right">28</td>
+</tr>
+<tr class="even">
+<td align="left">less_than_high_school</td>
+<td align="left">male</td>
+<td align="right">27</td>
+</tr>
+<tr class="odd">
+<td align="left">more_than_high_school</td>
+<td align="left">female</td>
+<td align="right">59</td>
+</tr>
+<tr class="even">
+<td align="left">more_than_high_school</td>
+<td align="left">male</td>
+<td align="right">56</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>
+merged_nhanes &lt;- merged_nhanes |&gt; 
+  mutate(education = factor(education, 
+                            levels = c(&quot;less_than_high_school&quot;, 
+                                       &quot;high_school_equivalent&quot;, 
+                                       &quot;more_than_high_school&quot;)))
+
+ggplot(merged_nhanes,aes(x = age, fill = sex)) + 
+  geom_density(alpha = .5) + 
+  facet_grid(. ~ education) + 
+  labs(title = &quot;Age Distributions For Men and Women&quot;, 
+       x = &quot;Age&quot;,
+       y = &quot;Density&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>For those who have high school equivalent education level, the number
+of women increases before age 70 of women and before age 60 of men, and
+there are more women than men among those over 60. For those who have
+less than high school education level, the number of women increases
+before age 70, and there are more women than men among those who are
+over 50 and less than 70 years old. For those who have more than high
+school education level, the number of women decreases after age 35, and
+there are more women than men among those who are over 25 and less than
+45 years old.</p>
+<pre class="r"><code>merged_nhanes &lt;- merged_nhanes |&gt;  
+  mutate(total_mims = rowSums(across(min1:min1440)))
+
+ggplot(merged_nhanes, aes(x = age, y = total_mims, color = sex)) + 
+  geom_point(alpha = .5) + 
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ education) + 
+  labs(title = &quot;Total Activities vs Age&quot;, 
+       x = &quot;Age&quot;,
+       y = &quot;Total Activities&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>For those who have high school equivalent education level, there is a
+decreasing trend of total activities after age 40, and the total
+activities of women is more than men at most age. For those who have
+less than high school education level, there is a decreasing trend of
+total activities except around age 60, and the total activities are the
+highest at early age among three education categories. For those who
+have more than high school education level, there is a decreasing trend
+of total activities after age 50 of men and after age 60 of women, and
+the total activities of women is always more than men.</p>
+<pre class="r"><code>merged_nhanes_long &lt;- merged_nhanes |&gt; 
+  pivot_longer(
+    min1:min1440,
+    names_to = &quot;min&quot;,
+    values_to = &quot;mims&quot;)
+
+ggplot(merged_nhanes_long, aes(x = min, y = mims, color = sex)) + 
+  geom_point(alpha = .2) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ education) + 
+  labs(title = &quot;MIMS vs Minutes&quot;, 
+       x = &quot;Minute&quot;,
+       y = &quot;MIMS&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code>
+merged_nhanes_long_2 &lt;- merged_nhanes |&gt; 
+  pivot_longer(
+    min1:min1440, 
+    names_to = &quot;minute&quot;, 
+    names_prefix = &quot;min&quot;, 
+    values_to = &quot;mims&quot;
+  ) |&gt;  
+  mutate(hour = ceiling(as.numeric(minute) / 60)) |&gt; 
+  group_by(seqn, sex, education, hour) |&gt; 
+  summarize(hourly_mims = sum(mims))
+
+ggplot(merged_nhanes_long_2, aes(x = hour, y = hourly_mims, color = sex)) + 
+  geom_point(alpha = .2) +
+  geom_smooth(se = FALSE) + 
+  facet_grid(. ~ education) + 
+  labs(title = &quot;Hourly MIMS vs Hour&quot;, 
+       x = &quot;Hour&quot;,
+       y = &quot;Hourly MIMS&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<p>The MIMS increases from 5am to 10am and keeps steady. And it
+decreases after 8pm. For those who have more than high school education
+level, the MIMS among women is higher than men.</p>
+</div>
+<div id="problem-3" class="section level3">
+<h3>Problem 3</h3>
+<pre class="r"><code>jan_2020 = read_csv(&quot;./data/Jan 2020 Citi.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    year = 2020,
+    month = 1
+  )
+jul_2020 = read_csv(&quot;./data/July 2020 Citi.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    year = 2020,
+    month = 7
+  )
+jan_2024 = read_csv(&quot;./data/Jan 2024 Citi.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    year = 2024,
+    month = 1
+  )
+jul_2024 = read_csv(&quot;./data/July 2024 Citi.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    year = 2024,
+    month = 7
+  )
+
+bike_merged = rbind(jan_2020, jul_2020, jan_2024, jul_2024) |&gt; drop_na()
+
+num_rides &lt;- bike_merged |&gt; 
+  group_by(year, month, member_casual) |&gt; 
+  summarize(n_obs = n()) |&gt; 
+  arrange(year, month)
+
+num_rides_wide &lt;- num_rides |&gt; 
+  pivot_wider(
+    names_from = member_casual,
+    values_from = n_obs
+  )
+
+kable(num_rides_wide)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">year</th>
+<th align="right">month</th>
+<th align="right">casual</th>
+<th align="right">member</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">2020</td>
+<td align="right">1</td>
+<td align="right">980</td>
+<td align="right">11418</td>
+</tr>
+<tr class="even">
+<td align="right">2020</td>
+<td align="right">7</td>
+<td align="right">5625</td>
+<td align="right">15388</td>
+</tr>
+<tr class="odd">
+<td align="right">2024</td>
+<td align="right">1</td>
+<td align="right">2094</td>
+<td align="right">16705</td>
+</tr>
+<tr class="even">
+<td align="right">2024</td>
+<td align="right">7</td>
+<td align="right">10843</td>
+<td align="right">36200</td>
+</tr>
+</tbody>
+</table>
+<p>For the casual riders, the number increased in 2020 and then
+decreased from july 2020 to january 2024, and then increased sharply in
+2024. For the member riders, the number increased from 2020 to 2024.</p>
+<pre class="r"><code>popular &lt;- bike_merged |&gt; 
+  filter(year == 2024, month == 7) |&gt; 
+  group_by(start_station_name) |&gt; 
+  summarize(n_rides = n()) |&gt; 
+  arrange(desc(n_rides))
+
+head(popular, n = 5)
+## # A tibble: 5 × 2
+##   start_station_name       n_rides
+##   &lt;chr&gt;                      &lt;int&gt;
+## 1 Pier 61 at Chelsea Piers     163
+## 2 University Pl &amp; E 14 St      155
+## 3 W 21 St &amp; 6 Ave              152
+## 4 West St &amp; Chambers St        150
+## 5 W 31 St &amp; 7 Ave              145</code></pre>
+<pre class="r"><code>median_ride &lt;- bike_merged |&gt; 
+  mutate(
+    month = as.factor(month),
+    weekdays = factor(weekdays, 
+              levels = c(&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wednesday&quot;, &quot;Thursday&quot;, 
+                         &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;))
+  ) |&gt; 
+  group_by(year, month, weekdays) |&gt; 
+  summarise(median_dur = median(duration))
+
+ggplot(median_ride, aes(x = weekdays, y = median_dur, color = month)) + 
+  geom_line(aes(group = month)) + 
+  geom_point() + 
+  facet_grid(. ~ year) + 
+  labs(title = &quot;Median Ride Duration by Day, Month, and Year&quot;, 
+       x = &quot;Weekdays&quot;,
+       y = &quot;Median Ride Duration&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>
+ggplot(bike_merged, aes(x = weekdays, y = duration)) + 
+  geom_boxplot(aes(color = factor(month))) + 
+  facet_grid(. ~ year) + 
+  labs(title = &quot;Ride Duration by Membership, Bike Type, and Month in 2024&quot;, 
+       x = &quot;Membership&quot;,
+       y = &quot;Ride Duration&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-10-2.png" width="672" /></p>
+<p>The median ride duration in July is always higher than in January.
+The median ride duration in 2020 is higher than in 2024, especially in
+July. In 2020, the median ride duration in Saturday and Sunday is the
+highest. In 2024, the median ride duration in Saturday is the
+highest.</p>
+<pre class="r"><code>type &lt;- bike_merged |&gt; 
+  filter(year == 2024)
+
+ggplot(type, aes(x = member_casual, y = duration, fill = rideable_type)) + 
+  geom_boxplot() + 
+  facet_grid(. ~ month) + 
+  labs(title = &quot;Ride Duration by Membership, Bike Type, and Month in 2024&quot;, 
+       x = &quot;Membership&quot;,
+       y = &quot;Ride Duration&quot;) + 
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="Viz+EDA_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>In 2024, there is an increase in electric bikes use duration from
+January to July, especially among casual riders. In casual riders, the
+duration using classic bikes is higher than electric bike, and in member
+riders, the duration using classic bikes is lower than electric bike.
+The median duration using electric bikes among casual riders is higher
+than member riders.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

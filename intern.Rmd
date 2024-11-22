@@ -1,0 +1,39 @@
+---
+title: "Internship Experience"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+---
+
+---
+
+**Nanjing Silexon Intelligent Technology Co., Ltd., Nanjing, China** 
+
+May 2022 - Jul 2022
+
+*Biochemical Data Analyst Intern*
+
+- Familiarized with SMILES and IUPAC, extracted and cleaned the structural information and biological activity experiment data of small-molecule drugs from the patents 
+- Used AI and TANKBind model to analyze molecular structures and predict biological activity, generating metrics on substructure, molecular shape, skeleton, and pharmacophore
+
+---
+
+**WuXi AppTec (Shanghai) Co., Ltd., Shanghai, China** 
+
+Jul 2021 - Sep 2021
+
+*Summer Intern at the Biochemical and Cell Signal Group of the In Vitro Biology Department*
+
+- Familiarized with the gene therapy methods used in the CRISPR/Cas System-aided cancer cells killing, and acquired the application of sgRNA in the CRISPR/Cas System and the sequencing data analysis CRISPR genome-wide screening
+- Adopted the sequencing technology to detect the Cas9 gRNA integrated into the cell, to obtain the expression of gRNA, and based on the results, to determine the gene was important for cell growth or not 
+- Cultured the transfected MeWo/human melanoma cells, HT-29/human colon cancer cells, and conducted monoclonal screening
+
+
+
+
+
+
+
+

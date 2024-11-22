@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Tidy Data</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Home</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="academic.html">Academic</a>
+</li>
+<li>
+  <a href="intern.html">Internship</a>
+</li>
+<li>
+  <a href="mailto:&lt;huizhong22x@gmail.com&gt;">
+    <span class="fa fa-envelope fa-lg"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://github.com/huizhong22x/">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Tidy Data</h1>
+
+</div>
+
+
+<div id="problem-1" class="section level1">
+<h1>Problem 1</h1>
+<p>Import the CSV file and clean the data.</p>
+<pre class="r"><code>dat_NYC = read_csv(
+  file = &quot;./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv&quot;
+  ) |&gt; 
+  janitor::clean_names() |&gt; 
+  select(line, 
+         station_name, 
+         station_latitude, 
+         station_longitude, 
+         starts_with(&quot;route&quot;), 
+         entry, 
+         vending, 
+         entrance_type, 
+         ada) |&gt; 
+  mutate(
+    entry = ifelse(entry == &quot;YES&quot;, TRUE, FALSE), 
+    across(route8:route11, as.character)
+    ) |&gt; 
+  distinct() # remove duplicate rows
+
+skimr::skim(dat_NYC)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">dat_NYC</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">684</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">19</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">15</td>
+</tr>
+<tr class="odd">
+<td align="left">logical</td>
+<td align="left">2</td>
+</tr>
+<tr class="even">
+<td align="left">numeric</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="19%" />
+<col width="13%" />
+<col width="19%" />
+<col width="5%" />
+<col width="5%" />
+<col width="8%" />
+<col width="12%" />
+<col width="15%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">line</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">5</td>
+<td align="right">17</td>
+<td align="right">0</td>
+<td align="right">36</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">station_name</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">4</td>
+<td align="right">39</td>
+<td align="right">0</td>
+<td align="right">356</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route1</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">24</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">route2</td>
+<td align="right">312</td>
+<td align="right">0.54</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">20</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route3</td>
+<td align="right">511</td>
+<td align="right">0.25</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">18</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">route4</td>
+<td align="right">566</td>
+<td align="right">0.17</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">13</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route5</td>
+<td align="right">590</td>
+<td align="right">0.14</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">12</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">route6</td>
+<td align="right">636</td>
+<td align="right">0.07</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route7</td>
+<td align="right">652</td>
+<td align="right">0.05</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">route8</td>
+<td align="right">664</td>
+<td align="right">0.03</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">3</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route9</td>
+<td align="right">673</td>
+<td align="right">0.02</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">route10</td>
+<td align="right">677</td>
+<td align="right">0.01</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">route11</td>
+<td align="right">677</td>
+<td align="right">0.01</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">vending</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">3</td>
+<td align="right">0</td>
+<td align="right">2</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">entrance_type</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">4</td>
+<td align="right">9</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: logical</strong></p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="left">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">entry</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.89</td>
+<td align="left">TRU: 611, FAL: 73</td>
+</tr>
+<tr class="even">
+<td align="left">ada</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.26</td>
+<td align="left">FAL: 505, TRU: 179</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table>
+<colgroup>
+<col width="18%" />
+<col width="10%" />
+<col width="14%" />
+<col width="7%" />
+<col width="5%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="7%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">station_latitude</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">40.73</td>
+<td align="right">0.07</td>
+<td align="right">40.58</td>
+<td align="right">40.68</td>
+<td align="right">40.73</td>
+<td align="right">40.77</td>
+<td align="right">40.90</td>
+<td align="left">▂▆▇▃▂</td>
+</tr>
+<tr class="even">
+<td align="left">station_longitude</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">-73.94</td>
+<td align="right">0.06</td>
+<td align="right">-74.03</td>
+<td align="right">-73.99</td>
+<td align="right">-73.96</td>
+<td align="right">-73.91</td>
+<td align="right">-73.76</td>
+<td align="left">▇▇▅▂▁</td>
+</tr>
+</tbody>
+</table>
+<p>This dataset contains 19 variables in total, including 15 character
+variables (Line, station name, Route 1-11, vending and entrance type), 2
+numeric variables (station latitude/longitude), and 2 logical variables
+(entry and ADA compliance). I rename variables, selected the key
+columns, converted the character variable “Entry” to a logical variable,
+and converted the numeric variables route8-11 to the character
+variables, and removed the duplicate rows. There is no need to remove
+NA. The dimension of the resulting dataset is 684 × 19, and they are
+tidy as each column represents a variable and each row represents one
+observation.</p>
+<p><strong>Question 1</strong></p>
+<pre class="r"><code>station = dat_NYC |&gt; 
+  distinct(station_name, line, .keep_all = TRUE)</code></pre>
+<p>There are 465 distinct stations.</p>
+<p><strong>Question 2</strong></p>
+<pre class="r"><code>ada_com &lt;- station |&gt; 
+  filter(ada == TRUE)</code></pre>
+<p>84 stations are ADA compliant.</p>
+<p><strong>Question 3</strong></p>
+<pre class="r"><code>prop = dat_NYC |&gt; 
+  filter(vending == &quot;NO&quot;) |&gt; 
+  summarize(proportion = mean(entry))</code></pre>
+<p>0.3846154 of station entrances / exits without vending allow
+entrance.</p>
+<p><strong>Question 4</strong></p>
+<p>Reformat data so that route number and route name are distinct
+variables.</p>
+<pre class="r"><code>dat_NYC_longer = dat_NYC |&gt; 
+  pivot_longer(
+    cols = starts_with(&quot;route&quot;), 
+    names_to = &quot;route_number&quot;, 
+    values_to = &quot;route_name&quot;, 
+    values_drop_na = TRUE
+  ) |&gt; 
+  mutate(
+    route_number = parse_number(route_number)
+  )
+
+head(dat_NYC_longer, 5)</code></pre>
+<pre><code>## # A tibble: 5 × 10
+##   line     station_name station_latitude station_longitude entry vending
+##   &lt;chr&gt;    &lt;chr&gt;                   &lt;dbl&gt;             &lt;dbl&gt; &lt;lgl&gt; &lt;chr&gt;  
+## 1 4 Avenue 25th St                  40.7             -74.0 TRUE  YES    
+## 2 4 Avenue 36th St                  40.7             -74.0 TRUE  YES    
+## 3 4 Avenue 36th St                  40.7             -74.0 TRUE  YES    
+## 4 4 Avenue 45th St                  40.6             -74.0 TRUE  YES    
+## 5 4 Avenue 53rd St                  40.6             -74.0 TRUE  YES    
+## # ℹ 4 more variables: entrance_type &lt;chr&gt;, ada &lt;lgl&gt;, route_number &lt;dbl&gt;,
+## #   route_name &lt;chr&gt;</code></pre>
+<pre class="r"><code>station_A &lt;-  dat_NYC_longer |&gt;
+  distinct(station_name, line, .keep_all = TRUE) |&gt; 
+  filter(route_name == &quot;A&quot;)
+
+ada_acom &lt;- station_A |&gt; 
+  filter(ada == TRUE) </code></pre>
+<p>60 distinct stations serve the A train. Of these stations that serve
+the A train, 17 stations are ADA compliant.</p>
+</div>
+<div id="problem-2" class="section level1">
+<h1>Problem 2</h1>
+<p>Import the dataset and clean the sheet.</p>
+<pre class="r"><code>MR = read_excel(
+  path = &quot;./data/202409 Trash Wheel Collection Data.xlsx&quot;, 
+  sheet = 1, 
+  range = &quot;A2:N653&quot;
+  ) |&gt; 
+  janitor::clean_names() |&gt; 
+  drop_na() |&gt;
+  mutate(
+    sports_balls = as.integer(round(sports_balls, 0)), 
+    source = &quot;MR&quot;, 
+    year = as.numeric(year)
+  )
+
+Professor = read_excel(
+  path = &quot;./data/202409 Trash Wheel Collection Data.xlsx&quot;, 
+  sheet = 2, 
+  range = &quot;A2:M121&quot;
+  ) |&gt; 
+  janitor::clean_names() |&gt; 
+  drop_na() |&gt; 
+  mutate(
+    source = &quot;Professor&quot;
+  )
+
+Gwynnda = read_excel(
+  path = &quot;./data/202409 Trash Wheel Collection Data.xlsx&quot;, 
+  sheet = 4, 
+  range = &quot;A2:L265&quot;
+  ) |&gt; 
+  janitor::clean_names() |&gt; 
+  drop_na() |&gt;
+  mutate(
+    source = &quot;Gwynnda&quot;
+  )
+
+# combine the datasets
+
+trash_tidy = bind_rows(MR, Professor, Gwynnda)
+
+str(trash_tidy)</code></pre>
+<pre><code>## tibble [845 × 15] (S3: tbl_df/tbl/data.frame)
+##  $ dumpster          : num [1:845] 1 2 3 4 5 6 7 8 9 10 ...
+##  $ month             : chr [1:845] &quot;May&quot; &quot;May&quot; &quot;May&quot; &quot;May&quot; ...
+##  $ year              : num [1:845] 2014 2014 2014 2014 2014 ...
+##  $ date              : POSIXct[1:845], format: &quot;2014-05-16&quot; &quot;2014-05-16&quot; ...
+##  $ weight_tons       : num [1:845] 4.31 2.74 3.45 3.1 4.06 2.71 1.91 3.7 2.52 3.76 ...
+##  $ volume_cubic_yards: num [1:845] 18 13 15 15 18 13 8 16 14 18 ...
+##  $ plastic_bottles   : num [1:845] 1450 1120 2450 2380 980 1430 910 3580 2400 1340 ...
+##  $ polystyrene       : num [1:845] 1820 1030 3100 2730 870 2140 1090 4310 2790 1730 ...
+##  $ cigarette_butts   : num [1:845] 126000 91000 105000 100000 120000 90000 56000 112000 98000 130000 ...
+##  $ glass_bottles     : num [1:845] 72 42 50 52 72 46 32 58 49 75 ...
+##  $ plastic_bags      : num [1:845] 584 496 1080 896 368 ...
+##  $ wrappers          : num [1:845] 1162 874 2032 1971 753 ...
+##  $ sports_balls      : int [1:845] 7 5 6 6 7 5 3 6 6 7 ...
+##  $ homes_powered     : num [1:845] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ source            : chr [1:845] &quot;MR&quot; &quot;MR&quot; &quot;MR&quot; &quot;MR&quot; ...</code></pre>
+<p>There are 845 observations and 15 variables including 11 numeric
+variables (eg., weight_tons, cigarette_butts, homes_powered) and 2
+character variables (month, source), 1 integer variable and 1 date
+variable.</p>
+<pre class="r"><code># total weight of trash collected by Professor Trash Wheel
+
+total_weight &lt;- trash_tidy |&gt; 
+  filter(
+    source == &quot;Professor&quot;
+  ) |&gt; 
+  summarize(
+    total_weight_prof = sum(weight_tons, na.rm = TRUE)
+  )
+
+# total number of cigarette butts collected by Gwynnda in June of 2022
+
+total_num &lt;- trash_tidy |&gt; 
+  filter(
+    source == &quot;Gwynnda&quot;,
+    year == 2022, 
+    month == &quot;June&quot;
+  ) |&gt; 
+  summarize(
+    total_ciga_gwy = sum(cigarette_butts, na.rm = TRUE)
+  )
+
+options(scipen = 999)
+
+total_num2 &lt;- trash_tidy |&gt; 
+  filter(
+    source == &quot;Gwynnda&quot;,
+    year == 2023, 
+    month == &quot;June&quot;
+  ) |&gt; 
+  summarize(
+    total_ciga_gwy = sum(cigarette_butts, na.rm = TRUE)
+  )</code></pre>
+<p>The total weight of trash collected by Professor Trash Wheel is
+233.26 tons. The total number of cigarette butts collected by Gwynnda in
+June of 2022 is 0. The total number of cigarette butts collected by
+Gwynnda in June of 2023 is 29100.</p>
+</div>
+<div id="problem-3" class="section level1">
+<h1>Problem 3</h1>
+<p>Import the datasets and clean the data.</p>
+<pre class="r"><code>dat_bakers = read_csv(&quot;./data/gbb_datasets/bakers.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  separate(
+    baker_name, 
+    into = c(&quot;baker_first_name&quot;, &quot;baker_last_name&quot;), 
+    sep = &quot; &quot;
+  ) |&gt; 
+  rename(baker = baker_first_name)
+
+dat_bakes = read_csv(&quot;./data/gbb_datasets/bakes.csv&quot;) |&gt; 
+  janitor::clean_names() |&gt; 
+  mutate(
+    baker = ifelse(baker == &quot;\&quot;Jo\&quot;&quot;, &quot;Jo&quot;, baker)
+  )
+
+dat_results = read_csv(&quot;./data/gbb_datasets/results.csv&quot;, skip = 2) |&gt; 
+  janitor::clean_names() |&gt; 
+  filter(!is.na(result)) |&gt; 
+  mutate(
+    baker = ifelse(baker == &quot;Joanne&quot;, &quot;Jo&quot;, baker)
+  )
+
+# check 
+
+anti_join(dat_bakers, dat_results)
+anti_join(dat_bakers, dat_bakes)
+
+# merge
+
+dat_merge1 = left_join(dat_results, dat_bakes) 
+dat_merge2 = left_join(dat_merge1, dat_bakers)
+
+# organize cols
+
+dat_merge_f = dat_merge2 |&gt; 
+  distinct() |&gt; 
+  select(series, episode, baker, signature_bake, technical, result, 
+         show_stopper, everything())</code></pre>
+<pre class="r"><code># summary
+
+skimr::skim(dat_merge_f)</code></pre>
+<table>
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">dat_merge_f</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">710</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">11</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">character</td>
+<td align="left">7</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table>
+<colgroup>
+<col width="22%" />
+<col width="13%" />
+<col width="18%" />
+<col width="5%" />
+<col width="5%" />
+<col width="8%" />
+<col width="12%" />
+<col width="14%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">min</th>
+<th align="right">max</th>
+<th align="right">empty</th>
+<th align="right">n_unique</th>
+<th align="right">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">baker</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">107</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">signature_bake</td>
+<td align="right">162</td>
+<td align="right">0.77</td>
+<td align="right">8</td>
+<td align="right">123</td>
+<td align="right">0</td>
+<td align="right">545</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">result</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">2</td>
+<td align="right">10</td>
+<td align="right">0</td>
+<td align="right">7</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">show_stopper</td>
+<td align="right">164</td>
+<td align="right">0.77</td>
+<td align="right">3</td>
+<td align="right">200</td>
+<td align="right">0</td>
+<td align="right">529</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">baker_last_name</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">3</td>
+<td align="right">17</td>
+<td align="right">0</td>
+<td align="right">117</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">baker_occupation</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">5</td>
+<td align="right">42</td>
+<td align="right">0</td>
+<td align="right">106</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">hometown</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">5</td>
+<td align="right">41</td>
+<td align="right">0</td>
+<td align="right">96</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+<col width="7%" />
+<col width="7%" />
+<col width="3%" />
+<col width="5%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">series</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">5.85</td>
+<td align="right">2.72</td>
+<td align="right">1</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">8</td>
+<td align="right">10</td>
+<td align="left">▅▇▇▇▇</td>
+</tr>
+<tr class="even">
+<td align="left">episode</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">4.26</td>
+<td align="right">2.61</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">6</td>
+<td align="right">10</td>
+<td align="left">▇▆▅▃▂</td>
+</tr>
+<tr class="odd">
+<td align="left">technical</td>
+<td align="right">14</td>
+<td align="right">0.98</td>
+<td align="right">4.84</td>
+<td align="right">2.98</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">4</td>
+<td align="right">7</td>
+<td align="right">13</td>
+<td align="left">▇▅▅▂▁</td>
+</tr>
+<tr class="even">
+<td align="left">baker_age</td>
+<td align="right">0</td>
+<td align="right">1.00</td>
+<td align="right">36.31</td>
+<td align="right">12.85</td>
+<td align="right">17</td>
+<td align="right">28</td>
+<td align="right">32</td>
+<td align="right">42</td>
+<td align="right">71</td>
+<td align="left">▅▇▃▁▂</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># write csv
+
+write_csv(dat_merge_f, &quot;./data/gbb_datasets/merge_data.csv&quot;)</code></pre>
+<p><strong>Cleaning progress:</strong></p>
+<ul>
+<li><p>Use reasonable variable names in all datasets. Omit rows that do
+not include dumpster-specific data</p></li>
+<li><p>In dataset “dat_bakers”, the variable “baker_name” had different
+name and form from other two datasets, so separate this variable into
+two columns “baker_first_name” and “baker_last_name”, and rename the
+“baker_first_name” as “baker”.</p></li>
+<li><p>In dataset “dat_bakes”, “Jo” in variable “baker” had a different
+name form from other datasets, so remove the quotation marks around
+“Jo”.</p></li>
+<li><p>In dataset “dat_results”, omit the first two useless rows and
+change “Joanne” in column “baker” to “Jo”.</p></li>
+</ul>
+<p><strong>Briefly Discussion:</strong></p>
+<p>There are 710 rows and 11 columns, including 7 character variables
+(eg., baker, result, show_stopper) and 4 numeric variables (eg., series,
+episode, technical). Variables “signature_bake”, “show_stopper” and
+“technical” have missing values.</p>
+<p><strong>Star bakers / Winners:</strong></p>
+<pre class="r"><code>star_baker = dat_merge_f |&gt; 
+  filter(series &gt;= 5 &amp; series &lt;= 10 &amp; result %in% c(&quot;STAR BAKER&quot;, &quot;WINNER&quot;)) |&gt; 
+  select(series, episode, baker) |&gt; 
+  arrange(series, episode)
+
+star_baker_wide = star_baker |&gt; 
+  pivot_wider(
+    names_from = series, 
+    values_from = baker, 
+    names_glue = &quot;star_baker_{series}/winner_{series}&quot;
+  )
+
+kable(star_baker_wide[1:10, ], format = &quot;markdown&quot;)</code></pre>
+<table>
+<colgroup>
+<col width="5%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="15%" />
+<col width="16%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="right">episode</th>
+<th align="left">star_baker_5/winner_5</th>
+<th align="left">star_baker_6/winner_6</th>
+<th align="left">star_baker_7/winner_7</th>
+<th align="left">star_baker_8/winner_8</th>
+<th align="left">star_baker_9/winner_9</th>
+<th align="left">star_baker_10/winner_10</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">Nancy</td>
+<td align="left">Marie</td>
+<td align="left">Jane</td>
+<td align="left">Steven</td>
+<td align="left">Manon</td>
+<td align="left">Michelle</td>
+</tr>
+<tr class="even">
+<td align="right">2</td>
+<td align="left">Richard</td>
+<td align="left">Ian</td>
+<td align="left">Candice</td>
+<td align="left">Steven</td>
+<td align="left">Rahul</td>
+<td align="left">Alice</td>
+</tr>
+<tr class="odd">
+<td align="right">3</td>
+<td align="left">Luis</td>
+<td align="left">Ian</td>
+<td align="left">Tom</td>
+<td align="left">Julia</td>
+<td align="left">Rahul</td>
+<td align="left">Michael</td>
+</tr>
+<tr class="even">
+<td align="right">4</td>
+<td align="left">Richard</td>
+<td align="left">Ian</td>
+<td align="left">Benjamina</td>
+<td align="left">Kate</td>
+<td align="left">Dan</td>
+<td align="left">Steph</td>
+</tr>
+<tr class="odd">
+<td align="right">5</td>
+<td align="left">Kate</td>
+<td align="left">Nadiya</td>
+<td align="left">Candice</td>
+<td align="left">Sophie</td>
+<td align="left">Kim-Joy</td>
+<td align="left">Steph</td>
+</tr>
+<tr class="even">
+<td align="right">6</td>
+<td align="left">Chetna</td>
+<td align="left">Mat</td>
+<td align="left">Tom</td>
+<td align="left">Liam</td>
+<td align="left">Briony</td>
+<td align="left">Steph</td>
+</tr>
+<tr class="odd">
+<td align="right">7</td>
+<td align="left">Richard</td>
+<td align="left">Tamal</td>
+<td align="left">Andrew</td>
+<td align="left">Steven</td>
+<td align="left">Kim-Joy</td>
+<td align="left">Henry</td>
+</tr>
+<tr class="even">
+<td align="right">8</td>
+<td align="left">Richard</td>
+<td align="left">Nadiya</td>
+<td align="left">Candice</td>
+<td align="left">Stacey</td>
+<td align="left">Ruby</td>
+<td align="left">Steph</td>
+</tr>
+<tr class="odd">
+<td align="right">9</td>
+<td align="left">Richard</td>
+<td align="left">Nadiya</td>
+<td align="left">Andrew</td>
+<td align="left">Sophie</td>
+<td align="left">Ruby</td>
+<td align="left">Alice</td>
+</tr>
+<tr class="even">
+<td align="right">10</td>
+<td align="left">Nancy</td>
+<td align="left">Nadiya</td>
+<td align="left">Candice</td>
+<td align="left">Sophie</td>
+<td align="left">Rahul</td>
+<td align="left">David</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Nadiya obtained 3 “star baker” in series 6.</li>
+<li>Candice obtained 3 “star baker” in series 7.</li>
+<li>Sophie obtained 2 “star baker” in series 8.</li>
+<li>Rahul obtained 2 “star baker” in series 9.</li>
+<li><strong>It is not surprising that they are winners.</strong><br />
+<br />
+</li>
+<li>Nancy obtained 1 “star baker” in series 5.</li>
+<li>David never obtained “star baker” in series 10.</li>
+<li><strong>It is hard to predict that they would be the
+winners.</strong></li>
+</ul>
+<p><br />
+</p>
+<p><strong>Viewers:</strong></p>
+<pre class="r"><code>dat_viewers = read_csv(&quot;./data/gbb_datasets/viewers.csv&quot;) |&gt; 
+  janitor::clean_names()</code></pre>
+<pre><code>## Rows: 10 Columns: 11
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: &quot;,&quot;
+## dbl (11): Episode, Series 1, Series 2, Series 3, Series 4, Series 5, Series ...
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>print(dat_viewers, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 × 11
+##    episode series_1 series_2 series_3 series_4 series_5 series_6 series_7
+##      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+##  1       1     2.24     3.1      3.85     6.6      8.51     11.6     13.6
+##  2       2     3        3.53     4.6      6.65     8.79     11.6     13.4
+##  3       3     3        3.82     4.53     7.17     9.28     12.0     13.0
+##  4       4     2.6      3.6      4.71     6.82    10.2      12.4     13.3
+##  5       5     3.03     3.83     4.61     6.95     9.95     12.4     13.1
+##  6       6     2.75     4.25     4.82     7.32    10.1      12       13.1
+##  7       7    NA        4.42     5.1      7.76    10.3      12.4     13.4
+##  8       8    NA        5.06     5.35     7.41     9.02     11.1     13.3
+##  9       9    NA       NA        5.7      7.41    10.7      12.6     13.4
+## 10      10    NA       NA        6.74     9.45    13.5      15.0     15.9
+## # ℹ 3 more variables: series_8 &lt;dbl&gt;, series_9 &lt;dbl&gt;, series_10 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>average_1 = dat_viewers |&gt; 
+  pull(series_1) |&gt; 
+  mean(na.rm = T)
+average_5 = dat_viewers |&gt; 
+  pull(series_5) |&gt; 
+  mean(na.rm = T)</code></pre>
+<p>The average viewership in Season 1 is 2.77.<br />
+The average viewership in Season 5 is 10.0393.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
